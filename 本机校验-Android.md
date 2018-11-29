@@ -165,7 +165,7 @@ public void umcLoginByType(String appId,
 
 OnGetTokenComplete的参数JSONObject，含义如下：
 
-| 字段       | 类型   | 含义                                                         |
+| 参数       | 类型   | 说明                                                         |
 | ---------- | ------ | ------------------------------------------------------------ |
 | resultCode | String | 返回码                                                       |
 | resultDesc | String | 返回描述                                                     |
@@ -229,43 +229,45 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 ### 3.1.2.  参数说明
 
-*1、json形式的报文交互必须是标准的json格式；*
+1、json形式的报文交互必须是标准的json格式
 
-*2、发送时请设置content type为 application/json*
+2、发送时请设置content type为 application/json
+
+3、参数类型都是String
 
 **请求参数**
 
-| 参数          | 层级  | 约束                         | 说明                                                         |
+| 参数          | 层级  | 是否必填                     | 说明                                                         |
 | ------------- | ----- | ---------------------------- | ------------------------------------------------------------ |
-| **header**    | **1** | 必选                         |                                                              |
-| version       | 2     | 必选                         | 版本号,初始版本号1.0,有升级后续调整                          |
-| msgId         | 2     | 必选                         | 使用UUID标识请求的唯一性                                     |
-| timestamp     | 2     | 必选                         | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
-| appId         | 2     | 必选                         | 应用ID                                                       |
-| **body**      | **1** | 必选                         |                                                              |
+| **header**    | **1** | 是                           |                                                              |
+| version       | 2     | 是                           | 版本号,初始版本号1.0,有升级后续调整                          |
+| msgId         | 2     | 是                           | 使用UUID标识请求的唯一性                                     |
+| timestamp     | 2     | 是                           | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| appId         | 2     | 是                           | 应用ID                                                       |
+| **body**      | **1** | 是                           |                                                              |
 | openType      | 2     | 否，requestertype字段为0时是 | 运营商类型：</br>1:移动;</br>2:联通;</br>3:电信;</br>0:未知  |
-| requesterType | 2     | 必选                         | 请求方类型：</br>0:APP；</br>1:WAP                           |
+| requesterType | 2     | 是                           | 请求方类型：</br>0:APP；</br>1:WAP                           |
 | message       | 2     | 否                           | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
 | expandParams  | 2     | 否                           | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |
 | keyType       | 2     | 否                           | 手机号码加密方式：</br>0:默认phonenum采用sha256加密，sign采用HMACSHA256算法</br>1:RSA加密（暂未支持）</br>（注：keyType=1时，phonenum和sign均使用RSA，keyType不填或非1、0时按keyType=0处理） |
-| phoneNum      | 2     | 必选                         | 待校验的手机号码的64位sha256值，字母大写。（手机号码 + appKey + timestamp， “+”号为合并意思）（注：建议开发者对用户输入的手机号码的格式进行校验，增加校验通过的概率） |
-| token         | 2     | 必选                         | 身份标识，字符串形式的token                                  |
-| sign          | 2     | 必选                         | 签名，HMACSHA256(appId + msgId + phonNum + timestamp + token + version)，输出64位大写字母 （注：“+”号为合并意思，不包含在被加密的字符串中,appkey为秘钥, 参数名做自然排序（Java是用TreeMap进行的自然排序）） |
+| phoneNum      | 2     | 是                           | 待校验的手机号码的64位sha256值，字母大写。（手机号码 + appKey + timestamp， “+”号为合并意思）（注：建议开发者对用户输入的手机号码的格式进行校验，增加校验通过的概率） |
+| token         | 2     | 是                           | 身份标识，字符串形式的token                                  |
+| sign          | 2     | 是                           | 签名，HMACSHA256(appId + msgId + phonNum + timestamp + token + version)，输出64位大写字母 （注：“+”号为合并意思，不包含在被加密的字符串中,appkey为秘钥, 参数名做自然排序（Java是用TreeMap进行的自然排序）） |
 
 **响应参数**
 
-| 参数         | 层级  | 约束 | 说明                                                         |
-| ------------ | ----- | :--- | :----------------------------------------------------------- |
-| **header**   | **1** | 必选 |                                                              |
-| msgId        | 2     | 必选 | 对应的请求消息中的msgid                                      |
-| timestamp    | 2     | 必选 | 响应消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
-| appId        | 2     | 必选 | 应用ID                                                       |
-| resultCode   | 2     | 必选 | 平台返回码                                                   |
-| **body**     | **1** | 必选 |                                                              |
-| resultDesc   | 2     | 必选 | 平台返回码                                                   |
-| message      | 2     | 否   | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| accessToken  | 2     | 否   | 使用短验辅助服务的凭证，当resultCode返回为001时，并且该appid在开发者社区配置了短验辅助功能时返回该参数。accessToken有效时间为5min，一次有效。 |
-| expandParams | 2     | 否   | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |
+| 参数         | 层级  | 说明                                                         |
+| ------------ | ----- | :----------------------------------------------------------- |
+| **header**   | **1** |                                                              |
+| msgId        | 2     | 对应的请求消息中的msgid                                      |
+| timestamp    | 2     | 响应消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| appId        | 2     | 应用ID                                                       |
+| resultCode   | 2     | 平台返回码                                                   |
+| **body**     | **1** |                                                              |
+| resultDesc   | 2     | 平台返回码                                                   |
+| message      | 2     | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
+| accessToken  | 2     | 使用短验辅助服务的凭证，当resultCode返回为001时，并且该appid在开发者社区配置了短验辅助功能时返回该参数。accessToken有效时间为5min，一次有效。 |
+| expandParams | 2     | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |
 
 </br>
 
@@ -326,7 +328,7 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 ### 3.2.1. 业务流程
 
-![](image/SMS_process.png)
+![](C:/Users/tonyl/Documents/-%20GitSDKDoc/mobile-Auth-android-STD/image/SMS_process.png)
 
 ### 3.2.2. 接口说明
 
@@ -346,43 +348,45 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 ### 3.2.3. 参数说明
 
-*1、json形式的报文交互必须是标准的json格式；*
+1、json形式的报文交互必须是标准的json格式
 
-*2、发送时请设置content type为 application/json*
+2、发送时请设置content type为 application/json
+
+3、参数类型都是String
 
 **请求参数：**
 
-| 参数名        | 类型   | 参数描述                                                     |
-| ------------- | ------ | :----------------------------------------------------------- |
-| msgId         | String | 使用UUID标识请求的唯一性                                     |
-| systemTime    | String | 请求消息发送的系统时间，北京时间，东八区时间。精确到毫秒，共17位，格式：20121227180001165。 |
-| version       | String | 版本号,初始版本号1.0,有升级后续调整                          |
-| requesterType | String | 合作伙伴集成类型0：APP；1：WAP                               |
-| appId         | String | 应用id                                                       |
-| mobileNumber  | String | 加密手机号码，AES加密，秘钥为md5（appkey）                   |
-| userIp        | String | 客户端IP                                                     |
-| message       | String | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| accessToken   | String | 临时凭证，要求：失效时间默认为5分钟，可配置                  |
-| expandParams  | String | 扩展参数                                                     |
-| sign          | String | 签名，MD5(msgId + systemTime + version + requesterType+ appId + mobileNumber + userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）排序后对应顺序参数值拼接做md5） |
+| 参数          | 是否必填 | 说明                                                         |
+| ------------- | -------- | :----------------------------------------------------------- |
+| msgId         | 是       | 使用UUID标识请求的唯一性                                     |
+| systemTime    | 是       | 请求消息发送的系统时间，北京时间，东八区时间。精确到毫秒，共17位，格式：20121227180001165。 |
+| version       | 是       | 版本号,初始版本号1.0,有升级后续调整                          |
+| requesterType | 是       | 合作伙伴集成类型0：APP；1：WAP                               |
+| appId         | 是       | 应用id                                                       |
+| mobileNumber  | 是       | 加密手机号码，AES加密，秘钥为md5（appkey）                   |
+| userIp        | 是       | 客户端IP                                                     |
+| message       | 否       | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
+| accessToken   | 是       | 临时凭证，要求：失效时间默认为5分钟，可配置                  |
+| expandParams  | 否       | 扩展参数                                                     |
+| sign          | 是       | 签名，MD5(msgId + systemTime + version + requesterType+ appId + mobileNumber + userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）排序后对应顺序参数值拼接做md5） |
 
 **响应参数：**
 
-| 参数名     | 参数类型 | 参数描述                                                     |
-| ---------- | -------- | ------------------------------------------------------------ |
-| msgId      | String   | 对应的请求消息中的msgId                                      |
-| systemTime | String   | 消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
-| message    | String   | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| resultDesc | String   | 返回码描述                                                   |
-| resultCode | String   | 处理状态编码：</br>000:成功；</br>003:内部调用失败；</br>004:下发失败；</br>102:参数无效；</br>124:IP校验失败；</br>213:appId不存在；</br>302:签名校验失败；</br>303:解析参数错误；</br>999:系统错误； |
+| 参数       | 说明                                                         |
+| ---------- | ------------------------------------------------------------ |
+| msgId      | 对应的请求消息中的msgId                                      |
+| systemTime | 消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| message    | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
+| resultDesc | 返回码描述                                                   |
+| resultCode | 处理状态编码：</br>000:成功；</br>003:内部调用失败；</br>004:下发失败；</br>102:参数无效；</br>124:IP校验失败；</br>213:appId不存在；</br>302:签名校验失败；</br>303:解析参数错误；</br>999:系统错误； |
 
 ## 3.3. 短信验证码校验接口
 
 短验辅助功能勾选后，本机号码校验接口返回“非本机号码”时，并且成功调用短信验证码下发接口成功让用户获取到验证码后，可以凭验证码调用本接口发起校验。
 
-###3.3.1. 业务流程
+### 3.3.1. 业务流程
 
-![](image/SMS_process.png)
+![](C:/Users/tonyl/Documents/-%20GitSDKDoc/mobile-Auth-android-STD/image/SMS_process.png)
 
 
 
@@ -404,33 +408,35 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 ### 3.3.3. 参数说明
 
-*1、json形式的报文交互必须是标准的json格式；*
+1、json形式的报文交互必须是标准的json格式
 
-*2、发送时请设置content type为 application/json*
+2、发送时请设置content type为 application/json
+
+3、参数类型都是String
 
 **请求参数：**
 
-| 参数名        | 类型   | 参数描述                                                     |
-| ------------- | ------ | ------------------------------------------------------------ |
-| msgId         | String | 使用UUID标识请求的唯一性                                     |
-| systemTime    | String | 请求消息发送的系统时间，北京时间，东八区时间。精确到毫秒，共17位，格式：20121227180001165。 |
-| version       | String | 版本号,初始版本号1.0,有升级后续调整                          |
-| requesterType | String | 合作伙伴集成类型0：APP；1：WAP                               |
-| appId         | String | 应用id                                                       |
-| mobileNumber  | String | 加密手机号码，AES加密，秘钥为appkey                          |
-| userIp        | String | 客户端IP                                                     |
-| smsCode       | String | 短信验证码，5min内有效                                       |
-| message       | String | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| sign          | String | 签名，MD5(msgId + systemTime + version + requesterType + appId + mobileNumber+ userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）） |
+| 参数          | 是否必填 | 说明                                                         |
+| ------------- | -------- | ------------------------------------------------------------ |
+| msgId         | 是       | 使用UUID标识请求的唯一性                                     |
+| systemTime    | 是       | 请求消息发送的系统时间，北京时间，东八区时间。精确到毫秒，共17位，格式：20121227180001165。 |
+| version       | 是       | 版本号,初始版本号1.0,有升级后续调整                          |
+| requesterType | 是       | 合作伙伴集成类型0：APP；1：WAP                               |
+| appId         | 是       | 应用id                                                       |
+| mobileNumber  | 是       | 加密手机号码，AES加密，秘钥为appkey                          |
+| userIp        | 是       | 客户端IP                                                     |
+| smsCode       | 是       | 短信验证码                                                   |
+| message       | 否       | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
+| sign          | 是       | 签名，MD5(msgId + systemTime + version + requesterType + appId + mobileNumber+ userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）） |
 
 **响应参数：**
 
-| 参数名     | 参数类型 | 参数描述                                                     |
-| ---------- | -------- | ------------------------------------------------------------ |
-| msgId      | String   | 对应的请求消息中的msgId                                      |
-| systemTime | String   | 消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
-| message    | String   | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| resultCode | String   | 处理状态编码：</br>000:短信验证成功 ；</br>003:内部调用失败；</br>004:校验失败；</br>005:验证码已失效，请重新获取；</br>102:参数无效；</br>124:IP校验失败；</br>213:appId不存在；</br>302:签名校验失败；</br>303:解析参数错误；</br>999:系统错误； |
+| 参数       | 说明                                                         |
+| ---------- | ------------------------------------------------------------ |
+| msgId      | 对应的请求消息中的msgId                                      |
+| systemTime | 消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| message    | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
+| resultCode | 处理状态编码：</br>000:短信验证成功 ；</br>003:内部调用失败；</br>004:校验失败；</br>005:验证码已失效，请重新获取；</br>102:参数无效；</br>124:IP校验失败；</br>213:appId不存在；</br>302:签名校验失败；</br>303:解析参数错误；</br>999:系统错误； |
 
 # 4. 平台返回码说明
 
@@ -464,7 +470,7 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 本返回码表仅针对`本机号码校验接口`使用
 
-| 返回码 | 说明                                         |
+| 返回码 | 返回码描述                                   |
 | ------ | -------------------------------------------- |
 | 000    | 是本机号码（纳入计费次数）                   |
 | 001    | 非本机号码（纳入计费次数，允许使用短验辅助） |
