@@ -130,7 +130,7 @@ public AuthnHelper (Context context)
 
 </br>
 
-## 2.2. 获取校验凭证token
+## 2.2. 获取校验凭证
 
 ### 2.2.1. 方法描述
 
@@ -318,9 +318,11 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 **调用注意事项：**
 
-1. 使用该接口前，请开发者在开发者社区能力配置页面勾选上“短验辅助功能”
+1. 使用该接口前，请开发者在开发者社区能力配置页面勾选上“短验辅助功能”（勾选后10分钟生效）
 2. 只有在服务端返回校验成功，而且结果为“非本机号码”时，才能调用该接口
 3. 本接口要求服务器IP地址白名单与本机号码校验配置的白名单相同
+4. 下发频次限制：每个手机号码1次/min，10次/24 hour
+5. 短验下发成功后，5min内有效
 
 ### 3.2.1. 业务流程
 
@@ -384,7 +386,7 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 
 
-### 3.2.2. 接口说明
+### 3.3.2. 接口说明
 
 **接口方向：**
 
@@ -400,7 +402,7 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 
 </br>
 
-### 3.2.3. 参数说明
+### 3.3.3. 参数说明
 
 *1、json形式的报文交互必须是标准的json格式；*
 
@@ -417,9 +419,9 @@ mAuthnHelper.umcLoginByType(Constant.APP_ID,
 | appId         | String | 应用id                                                       |
 | mobileNumber  | String | 加密手机号码，AES加密，秘钥为appkey                          |
 | userIp        | String | 客户端IP                                                     |
-| smsCode       | String | 短信验证码                                                   |
+| smsCode       | String | 短信验证码，5min内有效                                       |
 | message       | String | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码 |
-| sign          | String | 签名，MD5(msgId + systemTime + version +  requesterType + appId + mobileNumber+ userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）） |
+| sign          | String | 签名，MD5(msgId + systemTime + version + requesterType + appId + mobileNumber+ userIp + appkey)，输出32位小写字母，（注：“+”号为合并意思，不包含在被加密的字符串中，appkey为秘钥,   参数名做自然排序（Java是用TreeMap进行的自然排序）） |
 
 **响应参数：**
 
