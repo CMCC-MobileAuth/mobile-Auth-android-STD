@@ -141,7 +141,7 @@ public AuthnHelper (Context context)
 
 ## 2.2. 获取校验凭证
 
-请求校验凭证`token`，凭token调用本机号码校验接口。接口文档详见《平台接口文档》</br>
+请求校验凭证`token`，凭token调用本机号码校验接口。接口文档详见《移动认证服务端接口文档》</br>
 
 **注意：获取token前，开发者需提前申请`READ_PHONE_STATE`权限，否则会失败！**
 
