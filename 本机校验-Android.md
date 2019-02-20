@@ -73,8 +73,10 @@ public void onCreate(Bundle savedInstanceState) {
     mContext = this;    
     
     mAuthnHelper = AuthnHelper.getInstance(mContext.getApplicationContext());
+    //AuthnHelper初始化
     mAuthnHelper.init(Constant.APP_ID, Constant.APP_KEY);
-    
+    //设置是否输出sdk日志
+    mAuthnHelper.setDebugMode(true);
     }
 ```
 
@@ -102,17 +104,6 @@ mListener = new TokenListener() {
     }
 };
 ```
-
-**3. 接口调用**
-
-```java
-mAuthnHelper.umcLoginByType(Constant.APP_ID, 
-        Constant.APP_KEY, 12000,
-        mListener);
-```
-
-
-
 <div STYLE="page-break-after: always;"></div>
 
 # 2. SDK方法说明
